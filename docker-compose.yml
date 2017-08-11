@@ -1,0 +1,36 @@
+version: "2"
+
+services:
+  basebox:
+    image: adamstrickland/basebox:latest
+    build:
+      dockerfile: basebox.Dockerfile
+      context: .
+
+  devbox:
+    image: adamstrickland/devbox:latest
+    build:
+      dockerfile: devbox.Dockerfile
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - ~/projects:/usr/src
+      - ~/.ssh:/root/.ssh
+    ports:
+      - 22
+      - 80
+      - 3000
+      - 4000
+      - 8080
+    working_dir: /usr/src
+    depends_on:
+      - basebox
+
+  mysqldevbox:
+    image: adamstrickland/mysqldevbox:latest
+    build:
+      dockerfile: mysqldevbox.Dockerfile
+      context: .
+    depends_on:
+      - devbox
